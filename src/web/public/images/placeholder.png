@@ -1,0 +1,54 @@
+Technical Specifications for Image Creation:
+
+Base Properties:
+- Dimensions: 256x256 pixels
+- Format: PNG (optimized lossless compression)
+- Color Profile: sRGB
+- Transparency: Enabled
+- Target File Size: < 10KB
+- Metadata: Stripped
+
+Design Elements:
+1. Background:
+   - 8px grid pattern lines
+   - Light theme: #E5E7EB with 15% opacity
+   - Dark theme: #374151 with 15% opacity
+
+2. Icon:
+   - Centered position
+   - 64x64px dimensions
+   - Minimal outline style
+   - Purpose: Visual placeholder indicator
+
+3. Border:
+   - Width: 1px
+   - Style: Solid
+   - Light theme: #D1D5DB
+   - Dark theme: #4B5563
+
+Responsive Variants:
+- 128x128px (0.5x)
+- 256x256px (1x)
+- 512x512px (2x)
+
+Performance Optimizations:
+- Cache-Control: public, max-age=31536000, immutable
+- CDN Distribution: Enabled
+- Browser Caching: Enabled
+- Loading: lazy
+- Preload Priority: low
+
+Accessibility Requirements:
+- Alt text required (non-decorative)
+- Minimum contrast ratio: 4.5:1
+- Target contrast ratio: 7:1
+- ARIA role: img
+- Screen reader compatible
+
+Usage Contexts:
+- Loading states
+- Empty states
+- Failed image loads
+- Default profile images
+- Content placeholders
+- Skeleton screens
