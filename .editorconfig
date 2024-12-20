@@ -1,0 +1,64 @@
+# Root .editorconfig file for Transfer Requirements Management System
+# Enforces consistent coding styles across all project files
+root = true
+
+# Default settings for all files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 100
+
+# Python files configuration
+[*.py]
+indent_style = space
+indent_size = 4
+
+# TypeScript and React files configuration
+[*.{ts,tsx}]
+indent_style = space
+indent_size = 2
+
+# JSON configuration files
+[*.json]
+indent_style = space
+indent_size = 2
+
+# YAML configuration files
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# Shell scripts configuration
+[*.sh]
+indent_style = space
+indent_size = 2
+
+# Markdown files - preserve trailing whitespace
+[*.md]
+trim_trailing_whitespace = false
+
+# Makefiles require tabs
+[Makefile]
+indent_style = tab
+
+# Configuration files
+[*.{ini,cfg,conf}]
+indent_style = space
+indent_size = 2
+
+# Frontend template files
+[*.{html,css,scss,sass}]
+indent_style = space
+indent_size = 2
+
+# Database migration files
+[*.{sql,pgsql}]
+indent_style = space
+indent_size = 2
+
+# Docker related files
+[{Dockerfile,docker-compose.yml}]
+indent_style = space
+indent_size = 2
