@@ -1,0 +1,96 @@
+# Prometheus Alert Rules Configuration
+# Version: 2.45.0
+# Purpose: Defines alert rules for monitoring system health and performance
+
+groups:
+  # API Service Alerts
+  - name: api_alerts
+    rules:
+      - alert: APIHighLatency
+        expr: api:request_duration_seconds:p95 > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: API latency above threshold
+          description: 95th percentile API response time is above 800ms
+          
+      - alert: APIHighErrorRate
+        expr: api:error_rate:5m > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          service: api
+        annotations:
+          summary: High API error rate
+          description: Error rate is above 5% for 5 minutes
+
+  # Resource Utilization Alerts
+  - name: resource_alerts
+    rules:
+      - alert: HighCPUUsage
+        expr: container:cpu_usage:avg_5m > 85
+        for: 10m
+        labels:
+          severity: warning
+          service: ecs
+        annotations:
+          summary: High CPU usage detected
+          description: Container CPU usage above 85% for 10 minutes
+          
+      - alert: HighMemoryUsage
+        expr: container:memory_usage:avg > 90
+        for: 5m
+        labels:
+          severity: critical
+          service: ecs
+        annotations:
+          summary: High memory usage detected
+          description: Container memory usage above 90%
+
+  # Database Performance Alerts
+  - name: database_alerts
+    rules:
+      - alert: SlowQueries
+        expr: database:query_duration:avg_5m > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: database
+        annotations:
+          summary: Slow database queries detected
+          description: Average query duration above 100ms
+          
+      - alert: LowCacheHitRate
+        expr: cache:hit_rate:5m < 0.75
+        for: 15m
+        labels:
+          severity: warning
+          service: cache
+        annotations:
+          summary: Low cache hit rate
+          description: Cache hit rate below 75% for 15 minutes
+
+  # Search Service Alerts
+  - name: search_alerts
+    rules:
+      - alert: SearchHighLatency
+        expr: search:latency_seconds:p95 > 0.2
+        for: 5m
+        labels:
+          severity: warning
+          service: search
+        annotations:
+          summary: Search latency above threshold
+          description: 95th percentile search response time above 200ms
+          
+      - alert: SearchErrorSpike
+        expr: sum(rate(meilisearch_requests_total{status=~"5.*"}[5m])) > 0
+        for: 5m
+        labels:
+          severity: critical
+          service: search
+        annotations:
+          summary: Search error spike detected
+          description: Increased rate of search errors in last 5 minutes
