@@ -1,0 +1,82 @@
+# Set default behavior to automatically handle line endings for all text files
+* text=auto
+
+# Python source files
+*.py text diff=python
+
+# JavaScript/TypeScript source files
+*.js text
+*.jsx text
+*.ts text
+*.tsx text
+
+# Configuration files
+*.json text
+*.yml text
+*.yaml text
+*.toml text
+
+# Style files
+*.css text diff=css
+*.scss text diff=css
+
+# Documentation files
+*.md text diff=markdown
+*.mdx text diff=markdown
+
+# Binary files that should not be modified
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+
+# Shell scripts should use LF
+*.sh text eol=lf
+
+# Windows scripts should use CRLF
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Docker files
+Dockerfile text
+
+# Environment and configuration examples
+.env.example text
+
+# Package management files
+poetry.lock text
+package-lock.json text
+yarn.lock text
+
+# Database files
+*.sql text
+*.sqlite binary
+
+# Generated files
+*.min.js text
+*.min.css text
+
+# Ignore files
+.gitignore text
+.dockerignore text
+
+# CI/CD configuration
+*.github/workflows/*.yml text
+
+# AWS configuration
+*.aws/*.json text
+
+# Test files
+*.test.js text
+*.test.ts text
+*.spec.js text
+*.spec.ts text
+
+# Development configuration files
+.editorconfig text
+.prettierrc text
+.eslintrc text
