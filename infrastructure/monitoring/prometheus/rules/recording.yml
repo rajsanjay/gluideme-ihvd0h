@@ -1,0 +1,94 @@
+# Prometheus Recording Rules Configuration
+# Version: 2.45.0
+# Purpose: Pre-computes frequently used metrics and aggregations for efficient querying
+
+groups:
+  # API Performance Metrics
+  - name: api_metrics
+    rules:
+      # 95th percentile request duration over 5m window
+      - record: api:request_duration_seconds:p95
+        expr: histogram_quantile(0.95, sum(rate(django_http_requests_latency_seconds_bucket[5m])) by (le))
+        labels:
+          service: api
+
+      # Error rate as a ratio of 5xx responses to total responses
+      - record: api:error_rate:5m
+        expr: sum(rate(django_http_responses_total_by_status_total{status=~"5.*"}[5m])) / sum(rate(django_http_responses_total_by_status_total[5m]))
+        labels:
+          service: api
+
+      # Request rate by HTTP method
+      - record: api:requests_per_second:5m
+        expr: sum(rate(django_http_requests_total_by_method_total[5m])) by (method)
+        labels:
+          service: api
+
+      # Average response size
+      - record: api:response_size_bytes:avg
+        expr: rate(django_http_responses_body_total_bytes_sum[5m]) / rate(django_http_responses_body_total_bytes_count[5m])
+        labels:
+          service: api
+
+  # Resource Utilization Metrics
+  - name: resource_metrics
+    rules:
+      # Average CPU usage percentage per container
+      - record: container:cpu_usage:avg_5m
+        expr: avg_over_time(container_cpu_usage_seconds_total{container!=""}[5m]) * 100
+        labels:
+          service: ecs
+
+      # Average memory usage percentage per container
+      - record: container:memory_usage:avg
+        expr: avg_over_time(container_memory_usage_bytes{container!=""} / container_spec_memory_limit_bytes * 100[5m])
+        labels:
+          service: ecs
+
+      # Network receive rate per container
+      - record: container:network_receive_bytes:rate
+        expr: sum(rate(container_network_receive_bytes_total[5m])) by (container)
+        labels:
+          service: ecs
+
+  # Database Performance Metrics
+  - name: database_metrics
+    rules:
+      # Average query duration
+      - record: database:query_duration:avg_5m
+        expr: rate(django_db_query_duration_seconds_sum[5m]) / rate(django_db_query_duration_seconds_count[5m])
+        labels:
+          service: database
+
+      # Cache hit rate
+      - record: cache:hit_rate:5m
+        expr: rate(django_cache_hits_total[5m]) / rate(django_cache_gets_total[5m])
+        labels:
+          service: cache
+
+      # Active database connections
+      - record: database:connections:active
+        expr: "sum(pg_stat_activity_count{state='active'})"
+        labels:
+          service: database
+
+  # Search Service Metrics
+  - name: search_metrics
+    rules:
+      # 95th percentile search latency
+      - record: search:latency_seconds:p95
+        expr: histogram_quantile(0.95, sum(rate(meilisearch_request_duration_seconds_bucket[5m])) by (le))
+        labels:
+          service: search
+
+      # Search error rate
+      - record: search:error_rate:5m
+        expr: sum(rate(meilisearch_requests_total{status=~"5.*"}[5m])) / sum(rate(meilisearch_requests_total[5m]))
+        labels:
+          service: search
+
+      # Search index size
+      - record: search:index_size:bytes
+        expr: meilisearch_index_size_bytes
+        labels:
+          service: search
