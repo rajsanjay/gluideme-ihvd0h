@@ -1,0 +1,65 @@
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+.Python
+
+# Python package and distribution files
+*.so
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+
+# Environment and configuration files
+.env
+.env.*
+.installed.cfg
+celerybeat-schedule
+celerybeat.pid
+
+# Version control
+.git
+.gitignore
+
+# Test and coverage files
+.pytest_cache
+.coverage
+htmlcov
+.tox
+tests
+
+# IDE configurations
+.idea
+.vscode
+*.swp
+*.swo
+
+# Logs and runtime data
+*.log
+
+# Documentation
+README.md
+LICENSE
+docs
+
+# Development artifacts
+node_modules
+*.sqlite3
+media
+static
+tmp
+.DS_Store
+
+# Local development files
+docker-compose.override.yml
+docker-compose.*.yml
