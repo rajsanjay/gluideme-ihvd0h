@@ -1,0 +1,30 @@
+# Unless a later match takes precedence, @lead-architects will be requested for
+# review when someone opens a pull request.
+*       @lead-architects
+
+# Backend code ownership
+src/backend/**  @backend-team-leads
+
+# Frontend code ownership
+src/web/**      @frontend-team-leads
+
+# Infrastructure and deployment configuration
+infrastructure/**  @devops-team @security-team
+
+# CI/CD workflow ownership
+.github/workflows/**  @devops-team @security-team
+
+# User management and authentication (requires security review)
+src/backend/apps/users/**  @security-team @backend-team-leads
+
+# Course validation logic
+src/backend/apps/validation/**  @backend-team-leads @data-team
+
+# Transfer requirements module
+src/backend/apps/requirements/**  @backend-team-leads @data-team
+
+# Search functionality
+src/backend/apps/search/**  @backend-team-leads @search-team
+
+# Application configuration (requires security review)
+src/backend/config/settings/**  @security-team @devops-team
