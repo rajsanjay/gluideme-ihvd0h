@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+      args:
+        NODE_ENV: development
+        # Build-time arguments for frontend configuration
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+        NEXT_PUBLIC_ENVIRONMENT: development
+    ports:
+      - "3000:3000"
+    volumes:
+      # Source code with enhanced file watching for hot-reloading
+      - .:/app:delegated
+      # Optimized Node modules cache with named volume
+      - node_modules:/app/node_modules
+      # Persistent Next.js build cache for faster rebuilds
+      - next-cache:/app/.next
+    environment:
+      - NODE_ENV=development
+      # API and service endpoints
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      - NEXT_PUBLIC_MEILISEARCH_URL=${NEXT_PUBLIC_MEILISEARCH_URL:-http://localhost:7700}
+      - NEXT_PUBLIC_MEILISEARCH_KEY=${NEXT_PUBLIC_MEILISEARCH_KEY}
+      - NEXT_PUBLIC_PINECONE_API_KEY=${NEXT_PUBLIC_PINECONE_API_KEY}
+      - NEXT_PUBLIC_PINECONE_ENVIRONMENT=${NEXT_PUBLIC_PINECONE_ENVIRONMENT}
+      # AWS configuration
+      - NEXT_PUBLIC_AWS_REGION=${NEXT_PUBLIC_AWS_REGION:-us-west-2}
+      - NEXT_PUBLIC_S3_BUCKET=${NEXT_PUBLIC_S3_BUCKET}
+      # Authentication configuration
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      # Development optimizations
+      - NEXT_TELEMETRY_DISABLED=1
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+    init: true
+    networks:
+      - app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
+
+networks:
+  app-network:
+    driver: bridge
+    name: app-net
+    driver_opts:
+      com.docker.network.bridge.name: app-net
+      com.docker.network.bridge.enable_icc: "true"
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
+
+volumes:
+  node_modules:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/node_modules
+      o: bind
+  next-cache:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/.next
+      o: bind
+
+x-develop:
+  web:
+    watch:
+      - action: sync
+        path: ./
+        target: /app
+        ignore:
+          - .git/
+          - .next/
+          - node_modules/
+          - "*.test.*"
+      - action: rebuild
+        path: package.json
