@@ -1,0 +1,48 @@
+File Format: ICO (Windows Icon)
+Dimensions: 32x32 pixels (with 16x16 included)
+Color Depth: 32-bit (16.7M colors + alpha)
+File Size: Optimized (<10KB)
+
+Image Specifications:
+- Primary icon size: 32x32 pixels
+- Secondary icon size: 16x16 pixels
+- Format: Multi-resolution ICO file
+- Color Profile: sRGB
+- Transparency: Supported
+- Background: Transparent
+
+Design Requirements:
+1. Simple, recognizable shape representing transfer/education
+2. Uses brand primary color with high contrast
+3. Maintains clarity at 16x16 pixels
+4. Meets WCAG 2.1 AA contrast standards (4.5:1 ratio)
+5. Visible on both light and dark backgrounds
+6. Sharp edges for crisp rendering
+
+Technical Implementation:
+1. Multi-resolution ICO format containing:
+   - 32x32 pixels @ 32-bit color depth
+   - 16x16 pixels @ 32-bit color depth
+2. PNG compression for each size
+3. Optimized for web delivery
+4. Cache-Control headers recommended:
+   max-age=31536000, immutable
+
+Browser Support:
+- Chrome 4+
+- Firefox 2+
+- Safari 4+
+- Edge 12+
+- IE 6+
+- Opera 9+
+
+Platform Compatibility:
+- Windows Taskbar/Title Bar
+- macOS Dock/Title Bar
+- Mobile Home Screen
+- Browser Tabs
+- Bookmarks
+- Progressive Web App icons
+
+Note: This is a binary file specification. The actual .ico file should be 
+created using appropriate image editing software following these specifications.
