@@ -1,0 +1,173 @@
+/* globals.css - Core design system implementation */
+/* @next/font/google v13.0.0 */
+
+@import './tailwind.css';
+@import './components.css';
+
+/* Root Theme Variables - WCAG 2.1 AA Compliant Color System */
+:root {
+  /* Color System */
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --border: #e2e8f0;
+  --ring: #94a3b8;
+
+  /* Typography */
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', 
+               Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  /* 8-point Grid System */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-4: 16px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+  --spacing-12: 48px;
+  --spacing-16: 64px;
+
+  /* Border Radius */
+  --radius: 0.5rem;
+
+  /* Animation */
+  --transition-duration: 200ms;
+
+  /* Focus Management */
+  --focus-ring: 0 0 0 2px var(--ring);
+}
+
+/* Dark Mode Theme */
+[data-theme='dark'] {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --border: #1e293b;
+  --ring: #cbd5e1;
+}
+
+/* High Contrast Mode */
+[data-high-contrast='true'] {
+  --background: #ffffff;
+  --foreground: #000000;
+  --muted: #f0f0f0;
+  --muted-foreground: #404040;
+  --border: #000000;
+  --ring: #000000;
+}
+
+/* Base Styles */
+@layer base {
+  /* Document Root */
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-size-adjust: 100%;
+  }
+
+  /* Body Styles */
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    transition: background-color var(--transition-duration) ease-in-out;
+  }
+
+  /* Global Border Color */
+  * {
+    border-color: var(--border);
+    outline-color: var(--ring);
+  }
+
+  /* Selection Styles */
+  ::selection {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  /* Focus Visible Styles */
+  :focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+/* Media Queries */
+/* Dark Mode System Preference */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --background: #0f172a;
+    --foreground: #f8fafc;
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+    --border: #1e293b;
+    --ring: #cbd5e1;
+  }
+}
+
+/* Reduced Motion Preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (forced-colors: active) {
+  :root {
+    --background: Canvas;
+    --foreground: CanvasText;
+    --muted: GrayText;
+    --muted-foreground: GrayText;
+    --border: CanvasText;
+    --ring: Highlight;
+  }
+}
+
+/* Print Styles */
+@media print {
+  :root {
+    --background: #ffffff;
+    --foreground: #000000;
+  }
+
+  body {
+    background: none;
+  }
+
+  @page {
+    margin: 1.5cm;
+  }
+}
+
+/* Accessibility Utilities */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--background);
+  color: var(--foreground);
+  padding: var(--spacing-2);
+  z-index: 100;
+  transition: top var(--transition-duration);
+}
+
+.skip-link:focus {
+  top: 0;
+}
