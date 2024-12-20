@@ -1,0 +1,88 @@
+node_modules
+.pnpm-store
+yarn.lock
+package-lock.json
+
+# Build outputs
+.next
+.swc
+dist
+storybook-static
+.turbo
+coverage
+tsconfig.tsbuildinfo
+
+# Development files
+__tests__
+*.test.*
+*.spec.*
+jest.config.*
+.eslintrc*
+.prettierrc*
+.editorconfig
+
+# IDE and Editor files
+.vscode
+.idea
+*.sublime-*
+.DS_Store
+
+# Version Control
+.git
+.gitignore
+.gitattributes
+
+# Security and Credentials
+.env*
+.env.local
+.env.development
+.env.test
+.env.production
+*.pem
+*.key
+*.crt
+.ssh
+*id_rsa*
+*id_ed25519*
+
+# Docker files
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Documentation
+*.md
+CHANGELOG*
+LICENSE*
+AUTHORS*
+
+# Debug and Logs
+*debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Cache directories
+.cache
+.npm
+.eslintcache
+.stylelintcache
+
+# Test coverage
+coverage
+.nyc_output
+
+# Storybook
+storybook-static
+.storybook
+
+# Misc development files
+.husky
+.github
+.circleci
+.travis.yml
+.gitlab-ci.yml
+renovate.json
+*.config.js
+*.config.ts
