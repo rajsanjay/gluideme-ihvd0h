@@ -1,0 +1,93 @@
+# MeiliSearch Configuration v1.3+
+# Purpose: Production configuration for Transfer Requirements Management System
+# Optimized for academic course and requirement searches with sub-200ms latency
+
+#-----------------------------------------------
+# Server Configuration
+#-----------------------------------------------
+[server]
+# HTTP API listen address and port
+http_addr = "0.0.0.0:7700"
+
+# Secure master key for API authentication
+# Sourced from environment variable for security
+master_key = "${MEILI_MASTER_KEY}"
+
+# Production environment setting
+env = "production"
+
+# Disable analytics for privacy compliance
+no_analytics = true
+
+#-----------------------------------------------
+# Database Configuration
+#-----------------------------------------------
+[db]
+# Persistent storage path for indices
+db_path = "/meili_data"
+
+#-----------------------------------------------
+# Indexing Configuration
+#-----------------------------------------------
+[indexing]
+# Memory allocation for indexing operations
+# Optimized for production workload
+max_indexing_memory = "2GiB"
+
+# Thread allocation for parallel indexing
+max_indexing_threads = 4
+
+#-----------------------------------------------
+# Search Configuration
+#-----------------------------------------------
+[search]
+# Minimum word length for typo tolerance
+# Optimized for academic course codes
+min_word_size_for_typo = 3
+
+# Maximum search results per query
+# Balanced for pagination and response size
+max_total_hits = 1000
+
+# Search timeout to maintain SLA
+# Set to meet 200ms latency requirement
+timeout_ms = 200
+
+#-----------------------------------------------
+# Performance Tuning
+#-----------------------------------------------
+[dumps]
+# Dump directory for backup operations
+dump_dir = "/meili_data/dumps"
+
+# Maximum file size for dumps
+max_dump_size = "10GiB"
+
+#-----------------------------------------------
+# HTTP Configuration
+#-----------------------------------------------
+[http]
+# Connection timeouts
+connection_timeout = 10
+# Keep alive timeout for persistent connections
+keep_alive = 180
+# Maximum payload size for updates
+payload_size_limit = "100MB"
+
+#-----------------------------------------------
+# Queue Configuration
+#-----------------------------------------------
+[queue]
+# Maximum number of parallel tasks
+max_parallel_tasks = 8
+# Task retention period
+task_retention_days = 7
+
+#-----------------------------------------------
+# Logging Configuration
+#-----------------------------------------------
+[logs]
+# Log level for production environment
+level = "INFO"
+# JSON format for structured logging
+format = "json"
