@@ -1,0 +1,31 @@
+This is a binary font file that should be downloaded from the official Inter font repository:
+https://github.com/rsms/inter/releases
+
+File specifications:
+- Format: WOFF2 (Web Open Font Format 2.0)
+- Type: Variable font
+- Unicode coverage: Extensive
+- Variable axes: 
+  - Weight (wght): 100-900
+  - Width (wdth): 75-125 
+  - Slant (slnt): 0-10
+  - Optical Size (opsz): 8-144
+- OpenType features:
+  - rlig (Required Ligatures)
+  - calt (Contextual Alternates) 
+  - ss01 (Stylistic Set 1)
+  - kern (Kerning)
+  - liga (Standard Ligatures)
+
+The file should be served with the following headers:
+Content-Type: font/woff2
+Cache-Control: public, max-age=31536000, immutable
+
+Preload configuration in Next.js:
+<link 
+  rel="preload"
+  href="/fonts/inter-var.woff2" 
+  as="font"
+  type="font/woff2"
+  crossOrigin="anonymous"
+/>
