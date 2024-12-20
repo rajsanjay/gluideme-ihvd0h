@@ -1,0 +1,227 @@
+name: Enhanced Pull Request Checks
+
+on:
+  pull_request:
+    branches: 
+      - main
+      - develop
+
+# Ensure only one workflow runs per PR and cancel outdated ones
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+  security-events: write
+  id-token: write
+
+jobs:
+  frontend-checks:
+    name: Frontend Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: src/web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: src/web
+        run: npm ci
+
+      - name: Run ESLint
+        working-directory: src/web
+        run: npm run lint
+        
+      - name: Type check
+        working-directory: src/web
+        run: npx tsc --noEmit
+
+      - name: Run tests
+        working-directory: src/web
+        run: npm test -- --coverage
+        env:
+          CI: true
+
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: frontend-coverage
+          path: src/web/coverage
+          retention-days: 7
+
+  backend-checks:
+    name: Backend Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: src/backend/requirements.txt
+
+      - name: Install dependencies
+        working-directory: src/backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Black formatter check
+        working-directory: src/backend
+        run: black --check .
+
+      - name: Run Flake8
+        working-directory: src/backend
+        run: flake8 .
+
+      - name: Run MyPy type checking
+        working-directory: src/backend
+        run: mypy .
+
+      - name: Run Django system checks
+        working-directory: src/backend
+        run: python manage.py check --deploy
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.test
+          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_db
+
+      - name: Run tests
+        working-directory: src/backend
+        run: pytest --cov
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.test
+          DATABASE_URL: postgresql://test_user:test_password@localhost:5432/test_db
+
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: backend-coverage
+          path: src/backend/coverage
+          retention-days: 7
+
+  security-scan:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Snyk
+        uses: snyk/actions/setup@v1
+
+      - name: Run SAST scan
+        uses: microsoft/security-devops-action@v1
+        with:
+          categories: 'code'
+          
+      - name: Scan Python dependencies
+        working-directory: src/backend
+        run: snyk test --file=requirements.txt
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Scan npm packages
+        working-directory: src/web
+        run: snyk test
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          format: cyclonedx-json
+          output-file: sbom.json
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-reports
+          path: |
+            sbom.json
+            security-scan-results/
+          retention-days: 30
+
+  build-verification:
+    name: Build Verification
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [frontend-checks, backend-checks, security-scan]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build backend image
+        uses: docker/build-push-action@v4
+        with:
+          context: src/backend
+          load: true
+          tags: backend:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build frontend image
+        uses: docker/build-push-action@v4
+        with:
+          context: src/web
+          load: true
+          tags: frontend:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_API_URL=http://localhost:8000
+            NEXT_PUBLIC_ENVIRONMENT=test
+
+      - name: Verify backend health
+        run: |
+          docker run --rm backend:test python manage.py check --deploy
+          docker run --rm backend:test python manage.py makemigrations --check --dry-run
+
+      - name: Verify frontend build
+        run: |
+          docker run --rm frontend:test node --check server.js
+
+      - name: Store build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: |
+            src/backend/dist/
+            src/web/.next/
+          retention-days: 7
