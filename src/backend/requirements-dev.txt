@@ -1,0 +1,47 @@
+# Development Requirements for Transfer Requirements Management System
+# Python Version: >=3.11,<4.0
+# Extends base requirements from requirements.txt
+
+# Testing Framework and Plugins
+# Coverage requirement: 90%
+pytest==7.4.0               # Primary testing framework
+pytest-django==4.5.0        # Django integration for pytest
+pytest-cov==4.1.0          # Coverage reporting and enforcement
+factory-boy==3.3.0         # Test data factories
+faker==19.3.0              # Fake data generation
+
+# Code Quality Tools
+# Style: PEP 8 compliant
+black==23.7.0              # Code formatter
+isort==5.12.0             # Import sorter
+flake8==6.1.0             # Linter
+mypy==1.5.0               # Static type checker (strict mode)
+
+# Additional Development Dependencies
+ipython>=8.14.0           # Enhanced interactive Python shell
+django-debug-toolbar>=4.1.0  # Django debugging tools
+watchdog>=3.0.0           # File system monitoring for development
+pip-tools>=7.3.0          # Requirements file management
+
+# Documentation
+sphinx>=7.1.0             # Documentation generator
+sphinx-rtd-theme>=1.3.0   # Documentation theme
+
+# Security Testing
+bandit>=1.7.5             # Security linter
+safety>=2.3.5             # Dependency security checker
+
+# Performance Testing
+locust>=2.16.1            # Load testing tool
+django-silk>=5.0.3        # Request profiling
+
+# Debugging
+django-extensions>=3.2.3   # Development helpers
+ipdb>=0.13.13             # IPython debugger
+
+# Pre-commit Hooks
+pre-commit>=3.3.3         # Git hooks framework
+
+# Type Stubs for Static Typing
+types-requests>=2.31.0.2   # Type stubs for requests
+django-stubs>=4.2.3       # Type stubs for Django
