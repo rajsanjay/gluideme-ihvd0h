@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="240" height="60" viewBox="0 0 240 60" preserveAspectRatio="xMidYMid meet" 
+     xmlns="http://www.w3.org/2000/svg"
+     role="img"
+     aria-label="Transfer Requirements Management System Logo"
+     class="logo theme-aware">
+    
+    <!-- Definitions for reusable elements -->
+    <defs>
+        <!-- Gradient definitions for theme support -->
+        <linearGradient id="primary-gradient-light" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:var(--brand-primary, #2563eb)"/>
+            <stop offset="100%" style="stop-color:var(--brand-secondary, #3b82f6)"/>
+        </linearGradient>
+        <linearGradient id="primary-gradient-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:var(--brand-primary-dark, #60a5fa)"/>
+            <stop offset="100%" style="stop-color:var(--brand-secondary-dark, #93c5fd)"/>
+        </linearGradient>
+    </defs>
+
+    <!-- Main logo group -->
+    <g id="logo-group">
+        <!-- Transfer arrow symbol -->
+        <path class="logo-symbol" d="
+            M 30,30 
+            L 45,20 
+            L 45,25 
+            L 60,25 
+            L 60,35 
+            L 45,35 
+            L 45,40 
+            Z" 
+            fill="url(#primary-gradient-light)"
+        />
+
+        <!-- Book/document shape -->
+        <path class="logo-symbol" d="
+            M 70,15
+            L 90,15
+            Q 95,15 95,20
+            L 95,40
+            Q 95,45 90,45
+            L 70,45
+            Q 75,45 75,40
+            L 75,20
+            Q 75,15 70,15
+            Z"
+            fill="url(#primary-gradient-light)"
+        />
+
+        <!-- Text "TRMS" -->
+        <text x="110" y="38" 
+              class="logo-text"
+              style="font-family: system-ui, -apple-system, sans-serif; 
+                     font-weight: bold; 
+                     font-size: 24px;
+                     fill: currentColor;">
+            TRMS
+        </text>
+    </g>
+
+    <!-- Theme-aware styles -->
+    <style>
+        @media (prefers-color-scheme: dark) {
+            .logo-symbol {
+                fill: url(#primary-gradient-dark);
+            }
+            .logo-text {
+                fill: var(--brand-primary-dark, #60a5fa);
+            }
+        }
+        
+        /* Responsive sizing */
+        @media (max-width: 768px) {
+            .logo-text {
+                font-size: 20px;
+            }
+        }
+        @media (max-width: 320px) {
+            .logo-text {
+                font-size: 16px;
+            }
+        }
+
+        /* Base styles */
+        .logo {
+            width: 100%;
+            height: auto;
+            max-height: var(--logo-max-height, 48px);
+        }
+        
+        .theme-aware {
+            color-scheme: light dark;
+        }
+        
+        .logo-symbol {
+            transition: fill 0.2s ease;
+        }
+        
+        .logo-text {
+            transition: fill 0.2s ease;
+        }
+    </style>
+</svg>
