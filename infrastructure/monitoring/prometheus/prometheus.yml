@@ -1,0 +1,77 @@
+# Prometheus configuration file for Transfer Requirements Management System
+# Version: 2.45.0
+
+# Global configuration
+global:
+  scrape_interval: 15s     # Default interval for scraping targets
+  evaluation_interval: 15s # Default interval for evaluating rules
+  scrape_timeout: 10s     # Timeout for scrape requests
+
+# Rule files containing alert and recording rules
+rule_files:
+  - "rules/alerts.yml"     # Alert rules for monitoring thresholds
+  - "rules/recording.yml"  # Recording rules for metric aggregation
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['alertmanager:9093']
+      timeout: 5s
+      scheme: http
+
+# Scrape configurations for monitoring different services
+scrape_configs:
+  # API Service monitoring
+  - job_name: 'api'
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['api:8000']
+        labels:
+          service: 'api'
+          environment: 'production'
+    metrics_relabel_configs:
+      - source_labels: ['__name__']
+        regex: 'django_.*'
+        action: 'keep'
+
+  # ECS Container monitoring
+  - job_name: 'ecs'
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['cadvisor:8080']
+        labels:
+          service: 'ecs'
+          environment: 'production'
+
+  # Database monitoring
+  - job_name: 'database'
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+        labels:
+          service: 'database'
+          environment: 'production'
+
+  # Redis Cache monitoring
+  - job_name: 'redis'
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['redis-exporter:9121']
+        labels:
+          service: 'cache'
+          environment: 'production'
+
+  # MeiliSearch monitoring
+  - job_name: 'meilisearch'
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+    static_configs:
+      - targets: ['meilisearch:7700']
+        labels:
+          service: 'search'
+          environment: 'production'
