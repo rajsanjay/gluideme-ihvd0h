@@ -1,0 +1,106 @@
+[build-system]
+requires = ["poetry-core>=1.7.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "transfer-requirements-backend"
+version = "1.0.0"
+description = "Backend service for Transfer Requirements Management System"
+authors = ["Development Team"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/org/transfer-requirements"
+keywords = ["education", "transfer", "requirements", "django", "api"]
+python = "^3.11"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^4.2.0"                     # Core web framework
+djangorestframework = "^3.14.0"       # REST API framework
+celery = "^5.3.0"                     # Distributed task queue
+redis = "^7.0.0"                      # Cache and message broker
+psycopg2-binary = "^2.9.0"           # PostgreSQL adapter
+boto3 = "^1.28.0"                     # AWS SDK
+meilisearch = "^1.3.0"               # Search engine client
+pinecone-client = "^2.2.0"           # Vector search client
+pyjwt = "^2.8.0"                     # JWT authentication
+python-dotenv = "^1.0.0"             # Environment configuration
+gunicorn = "^21.2.0"                 # WSGI HTTP Server
+django-cors-headers = "^4.2.0"        # CORS middleware
+django-filter = "^23.2.0"            # Query filtering
+django-storages = "^1.13.0"          # Storage backends
+sentry-sdk = "^1.29.0"               # Error tracking
+structlog = "^23.1.0"                # Structured logging
+
+[tool.poetry.dev-dependencies]
+# Testing
+pytest = "^7.4"                       # Testing framework
+pytest-django = "^4.5"               # Django test integration
+pytest-cov = "^4.1"                  # Coverage reporting
+pytest-xdist = "^3.3"                # Parallel test execution
+pytest-env = "^1.0"                  # Environment variable handling
+factory-boy = "^3.3"                 # Test data generation
+faker = "^19.3"                      # Fake data generation
+coverage = "^7.3"                    # Code coverage
+
+# Code Quality
+black = "^23.7"                      # Code formatting
+isort = "^5.12"                      # Import sorting
+flake8 = "^6.1"                      # Code linting
+flake8-docstrings = "^1.7"          # Docstring linting
+flake8-bugbear = "^23.7"            # Bug detection
+mypy = "^1.5"                        # Type checking
+django-stubs = "^4.2"                # Django type stubs
+types-redis = "^4.6"                 # Redis type stubs
+types-boto3 = "^1.0"                 # AWS SDK type stubs
+
+# Security
+bandit = "^1.7"                      # Security linting
+safety = "^2.3"                      # Dependency scanning
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+include = "\.pyi?$"
+extend-exclude = "/migrations/"
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 100
+known_first_party = ["apps", "api", "config", "utils"]
+known_django = "django"
+sections = ["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+skip = ["migrations"]
+
+[tool.pytest]
+django_settings_module = "config.settings.test"
+python_files = ["test_*.py", "*_test.py"]
+testpaths = [
+    "apps/core/tests",
+    "apps/courses/tests",
+    "apps/institutions/tests",
+    "apps/requirements/tests",
+    "apps/search/tests",
+    "apps/users/tests",
+    "apps/validation/tests",
+    "utils/tests",
+    "api/v1/tests"
+]
+addopts = "--strict-markers --cov=. --cov-report=xml --cov-report=term-missing --cov-report=html --cov-fail-under=90 -n auto --dist loadfile"
+markers = [
+    "slow: marks tests as slow",
+    "integration: marks tests as integration tests",
+    "e2e: marks tests as end-to-end tests"
+]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+plugins = ["mypy_django_plugin.main"]
